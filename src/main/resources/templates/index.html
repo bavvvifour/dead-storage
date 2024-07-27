@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Storage</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link rel="stylesheet"
+          href="https://mdbcdn.b-cdn.net/wp-content/themes/mdbootstrap4/docs-app/css/dist/mdb5/standard/modules/75a0fe7c939ce8cd48a5e968e62917d3.min.css">
+</head>
+
+<body>
+<header>
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol id="bootstrap" viewBox="0 0 118 94">
+            <title>Bootstrap</title>
+            <path fill-rule="evenodd" clip-rule="evenodd"
+                  d="M24.509 0c-6.733 0-11.715 5.893-11.492 12.284.214 6.14-.064 14.092-2.066 20.577C8.943 39.365 5.547 43.485 0 44.014v5.972c5.547.529 8.943 4.649 10.951 11.153 2.002 6.485 2.28 14.437 2.066 20.577C12.794 88.106 17.776 94 24.51 94H93.5c6.733 0 11.714-5.893 11.491-12.284-.214-6.14.064-14.092 2.066-20.577 2.009-6.504 5.396-10.624 10.943-11.153v-5.972c-5.547-.529-8.934-4.649-10.943-11.153-2.002-6.484-2.28-14.437-2.066-20.577C105.214 5.894 100.233 0 93.5 0H24.508zM80 57.863C80 66.663 73.436 72 62.543 72H44a2 2 0 01-2-2V24a2 2 0 012-2h18.437c9.083 0 15.044 4.92 15.044 12.474 0 5.302-4.01 10.049-9.119 10.88v.277C75.317 46.394 80 51.21 80 57.863zM60.521 28.34H49.948v14.934h8.905c6.884 0 10.68-2.772 10.68-7.727 0-4.643-3.264-7.207-9.012-7.207zM49.948 49.2v16.458H60.91c7.167 0 10.964-2.876 10.964-8.281 0-5.406-3.903-8.178-11.425-8.178H49.948z">
+            </path>
+        </symbol>
+    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <title>logout</title>
+        <symbol id="logout" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+            <path fill-rule="evenodd"
+                  d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+        </symbol>
+    </svg>
+    <nav class="py-2 bg-light border-bottom">
+        <div class="container d-flex flex-wrap">
+            <ul class="nav me-auto">
+                <li class="nav-item"><a th:href="@{/}" class="nav-link link-dark px-2 active" aria-current="page">
+                    <svg
+                            width="40" height="32">
+                        <use xlink:href="#bootstrap"></use>
+                    </svg>
+                </a></li>
+                <li class="nav-item"><a th:href="@{/}" class="nav-link link-dark px-2 active" aria-current="page">File
+                    Storage</a></li>
+            </ul>
+            <ul class="nav">
+                <li class="nav-item">
+                    <a href="#" class="nav-link link-dark px-2">
+                        <div sec:authentication="name"></div>
+                    </a></li>
+                <li class="nav-item">
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-primary">
+                            <svg width="25" height="25">
+                                <use xlink:href="#logout"></use>
+                            </svg>
+                            Logout
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div class="container d-flex flex-wrap">
+
+    <main>
+
+        <div class="breadcrumbs">
+            <nav aria-label="breadcrumb" style="padding-top: 10px;">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a th:href="@{/}" th:text="'Home'"></a>
+                    </li>
+
+                    <li th:each="breadcrumb, iter : ${breadcrumbs}"
+                        class="breadcrumb-item"
+                        th:classappend="${iter.last ? ' active' : ''}"
+                        aria-current="${iter.last ? 'page' : null}">
+                        <a th:if="${!iter.last}"
+                           th:href="@{'/?path=' + ${breadcrumb.path}}"
+                           th:text="${breadcrumb.name}"></a>
+                        <span th:if="${iter.last}" th:text="${breadcrumb.name}"></span>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+
+        <div class="upload-file">
+            <form th:action="@{/upload}" method="post" enctype="multipart/form-data"
+                  class="row row-cols-lg-auto g-3 align-items-center mb-3">
+                <div class="col-12">
+                    <input type="file" name="file" class="form-control"/>
+                </div>
+                <input type="hidden" name="path" th:value="${path}"/>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="upload-folder">
+            <form th:action="@{/upload-folder}" method="post" enctype="multipart/form-data"
+                  class="row row-cols-lg-auto g-3 align-items-center mb-3">
+                <div class="col-12">
+                    <input type="file" name="files" webkitdirectory multiple class="form-control"/>
+                </div>
+                <input type="hidden" name="path" th:value="${path}"/>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-info">Upload Folder</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="create-folder">
+            <form th:action="@{/create-folder}" method="post" class="row row-cols-lg-auto g-3 align-items-center mb-3">
+                <div class="col-12">
+                    <input type="text" name="folderName" class="form-control" placeholder="Folder Name"/>
+                </div>
+                <input type="hidden" name="path" th:value="${path}"/>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-secondary">Create Folder</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="listOfAllFiles">
+            <ul class="list-group mb-4">
+                <li class="list-group-item d-flex justify-content-between align-items-center" th:each="file : ${files}">
+                    <div th:if="${#strings.endsWith(file, '/')}">
+                        <a th:href="@{'/?path=' + ${#strings.substring(file, 0, #strings.length(file) - 1)}}"
+                           th:text="${file}"></a>
+                        <div class="btn-group" role="group">
+                            <form th:action="@{/rename-folder}" method="post" class="d-inline">
+                                <input type="text" name="newName" class="form-control" placeholder="New Name"
+                                       style="display:inline-block; width:auto;"/>
+                                <input type="hidden" name="_method" value="patch"/>
+                                <input type="hidden" name="path" th:value="${path}"/>
+                                <input type="hidden" name="folderName" th:value="${file}"/>
+                                <button type="submit" class="btn btn-warning">Rename Folder</button>
+                            </form>
+                            <form th:action="@{/delete-folder}" method="post" class="d-inline">
+                                <input type="hidden" name="_method" value="delete"/>
+                                <input type="hidden" name="path" th:value="${path}"/>
+                                <input type="hidden" name="folderName" th:value="${file}"/>
+                                <button type="submit" class="btn btn-danger">Delete Folder</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div th:if="${not #strings.endsWith(file, '/') and not file.contains('.emptyFolder')}">
+                        <a th:text="${file}"></a>
+                        <div class="btn-group" role="group">
+                            <form th:action="@{/rename}" method="post" class="d-inline">
+                                <input type="text" name="newName" class="form-control" placeholder="New Name"
+                                       style="display:inline-block; width:auto;"/>
+                                <input type="hidden" name="_method" value="patch"/>
+                                <input type="hidden" name="path" th:value="${path}"/>
+                                <input type="hidden" name="fileName" th:value="${file}"/>
+                                <button type="submit" class="btn btn-warning">Rename</button>
+                            </form>
+                            <form th:action="@{/delete}" method="post" class="d-inline">
+                                <input type="hidden" name="_method" value="delete"/>
+                                <input type="hidden" name="path" th:value="${path}"/>
+                                <input type="hidden" name="fileName" th:value="${file}"/>
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="search">
+            <section class="w-100 p-4 pb-4 d-flex justify-content-center align-items-center flex-column">
+                <div>
+                    <form th:action="@{/search}" method="get">
+                        <div class="input-group">
+                            <div class="form-outline" data-mdb-input-init="" data-mdb-input-initialized="true">
+                                <input type="search" id="form1" class="form-control" name="query"
+                                       placeholder="Search..."/>
+                                <label class="form-label" for="form1" style="margin-left: 0px;">Search</label>
+                                <div class="form-notch">
+                                    <div class="form-notch-leading" style="width: 9px;"></div>
+                                    <div class="form-notch-middle" style="width: 56.8px;"></div>
+                                    <div class="form-notch-trailing"></div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary" data-mdb-ripple-init="">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+
+        <div th:if="${results}">
+            <h2>Search Results for '<span th:text="${query}"></span>'</h2>
+            <ul>
+                <li th:each="result : ${results}" th:if="${not result.contains('.emptyFolder')}">
+                    <span th:text="${result}"></span>
+                </li>
+            </ul>
+        </div>
+
+    </main>
+</div>
+</body>
+
+</html>
